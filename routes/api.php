@@ -29,7 +29,7 @@ Route::delete('/v1/delete_me', 'App\Http\Controllers\UserController@delete_me');
 Route::group(
     [
 
-    'middleware' => 'auth:api',
+    // 'middleware' => 'auth:api',
     'namespace' => 'App\Http\Controllers',
     ]
 
