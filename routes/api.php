@@ -29,7 +29,7 @@ Route::delete('/v1/delete_me', 'App\Http\Controllers\UserController@delete_me');
 Route::group(
     [
 
-    // 'middleware' => 'auth:api',
+    'middleware' => 'auth:api',
     'namespace' => 'App\Http\Controllers',
     ]
 
@@ -58,7 +58,7 @@ Route::group(
     Route::get('/v1/getPlanSalesStats', 'SalesController@getPlanSalesStats')->middleware('admin');
     
 
-    Route::get('/v1/licenses', 'LicenseController@get_licenses');
+    Route::get('/v1/licenses', 'LicenseController@get_licenses')->middleware('admin');
     Route::post('/v1/licenses', 'LicenseController@create_license')->middleware('admin');
     Route::get('/v1/licenses/{license_number}', 'LicenseController@get_license')->middleware('admin');
     Route::put('/v1/licenses/{license_number}', 'LicenseController@update_license')->middleware('admin');
