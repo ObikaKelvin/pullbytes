@@ -14,16 +14,15 @@ class CreateLicensesTable extends Migration
     public function up()
     {
         Schema::create('licenses', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->uuid('license_number');
             $table->unsignedBigInteger('subscription_id')->nullable();
             $table->unsignedBigInteger('plan_id');
             $table->unsignedBigInteger('user_id');
-            $table->smallInteger('number_of_urls');
             $table->integer('price');
-            $table->json('active_urls');
+            $table->json('active_urls')->nullable();
             $table->string('status')->default('active');
-        $table->dateTime('expires_at')->nullable();
+            $table->dateTime('expires_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
