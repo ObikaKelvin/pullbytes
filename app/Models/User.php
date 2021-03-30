@@ -48,8 +48,14 @@ class User extends Authenticatable implements JWTSubject
 
     public function licenses()
     {
-        return $this->hasMany('App\License');
+        return $this->hasMany(License::class);
     }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
 
         /**
      * Get the identifier that will be stored in the subject claim of the JWT.
