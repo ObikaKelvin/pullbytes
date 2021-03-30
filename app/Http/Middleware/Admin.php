@@ -33,6 +33,6 @@ class Admin
                 'status' => 'fail',
                 'message' => 'Please login in to access this route'
             ],
-            401);
+           401);
     }
 }
