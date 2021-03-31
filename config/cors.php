@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'localhost/*'],
+    'paths' => ['*'],
 
     'allowed_methods' => ['*'],
 
@@ -23,7 +23,7 @@ return [
 
     'allowed_origins_patterns' => ['*'],
 
-    'allowed_headers' => ['*', 'Access-Control-Request-Headers'],
+    'allowed_headers' => ['*'],
 
     'exposed_headers' => ['*'],
 
