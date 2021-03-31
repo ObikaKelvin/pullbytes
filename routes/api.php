@@ -26,7 +26,7 @@ Route::post('/v1/register', 'App\Http\Controllers\AuthController@register');
 Route::group(
     [
 
-    // 'middleware' => 'auth:api',
+    'middleware' => 'auth:api',
     'namespace' => 'App\Http\Controllers',
     ]
 
