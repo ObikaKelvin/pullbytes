@@ -24,9 +24,8 @@ class LicenseRequest extends FormRequest
     public function rules()
     {
         return [
-            'subscription_id'=>'required',
-            'plan_id'=>'required',
-            'user_id'=>'required',
+            // 'plan_id'=>'required',
+            // 'user_id'=>'required',
             // 'expires_at'=>'required'
         ];
     }
