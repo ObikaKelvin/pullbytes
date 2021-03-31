@@ -26,13 +26,13 @@ Route::post('/v1/register', 'App\Http\Controllers\AuthController@register')->mid
 Route::group(
     [
 
-    'middleware' => ['HandleCors'],
+    
     'namespace' => 'App\Http\Controllers',
     ]
 
 , function ($router) {
 
-    Route::resource('/v1/users', 'UserController')->middleware('admin');
+    Route::resource('/v1/users', 'UserController');
     Route::post('/v1/users_file', 'UserController@update_file');
     
     Route::post('/v1/logout', 'AuthController@logout');
@@ -48,40 +48,40 @@ Route::group(
 
 
     Route::get('/v1/plans', 'PlanController@get_plans');
-    Route::post('/v1/plans', 'PlanController@create_plan')->middleware('admin');
-    Route::get('/v1/plans/{id}', 'PlanController@get_plan')->middleware('admin');
-    Route::put('/v1/plans/{id}', 'PlanController@update_plan')->middleware('admin');
-    Route::delete('/v1/plans/{id}', 'PlanController@delete_plan')->middleware('admin');
+    Route::post('/v1/plans', 'PlanController@create_plan');
+    Route::get('/v1/plans/{id}', 'PlanController@get_plan');
+    Route::put('/v1/plans/{id}', 'PlanController@update_plan');
+    Route::delete('/v1/plans/{id}', 'PlanController@delete_plan');
 
-    Route::get('/v1/monthly_revenue', 'SalesController@getMonthlyRevenue')->middleware('admin');
-    Route::get('/v1/sales_stats', 'SalesController@getSalesStats')->middleware('admin');
-    Route::get('/v1/getPlanSalesStats', 'SalesController@getPlanSalesStats')->middleware('admin');
+    Route::get('/v1/monthly_revenue', 'SalesController@getMonthlyRevenue');
+    Route::get('/v1/sales_stats', 'SalesController@getSalesStats');
+    Route::get('/v1/getPlanSalesStats', 'SalesController@getPlanSalesStats');
     
 
-    Route::get('/v1/licenses', 'LicenseController@get_licenses')->middleware('admin');
-    Route::post('/v1/licenses', 'LicenseController@create_license')->middleware('admin');
-    Route::get('/v1/licenses/{id}', 'LicenseController@get_license')->middleware('admin');
-    Route::patch('/v1/licenses/{id}', 'LicenseController@update_license')->middleware('admin');
-    Route::delete('/v1/licenses/{id}', 'LicenseController@delete_license')->middleware('admin');
+    Route::get('/v1/licenses', 'LicenseController@get_licenses');
+    Route::post('/v1/licenses', 'LicenseController@create_license');
+    Route::get('/v1/licenses/{id}', 'LicenseController@get_license');
+    Route::patch('/v1/licenses/{id}', 'LicenseController@update_license');
+    Route::delete('/v1/licenses/{id}', 'LicenseController@delete_license');
 
-    Route::get('/v1/tickets', 'TicketController@get_tickets')->middleware('admin');
-    Route::post('/v1/tickets', 'TicketController@create_ticket')->middleware('admin');
-    Route::get('/v1/tickets/{id}', 'TicketController@get_ticket')->middleware('admin');
-    Route::patch('/v1/tickets/{id}', 'TicketController@update_ticket')->middleware('admin');
-    Route::delete('/v1/tickets/{id}', 'TicketController@delete_ticket')->middleware('admin');
+    Route::get('/v1/tickets', 'TicketController@get_tickets');
+    Route::post('/v1/tickets', 'TicketController@create_ticket');
+    Route::get('/v1/tickets/{id}', 'TicketController@get_ticket');
+    Route::patch('/v1/tickets/{id}', 'TicketController@update_ticket');
+    Route::delete('/v1/tickets/{id}', 'TicketController@delete_ticket');
 
     Route::get('/v1/notifications', 'NotificationController@get_notifications');
     Route::post('/v1/notifications', 'NotificationController@create_notification');
     Route::get('/v1/notifications/{id}', 'NotificationController@get_notification');
-    Route::patch('/v1/notifications/{id}', 'NotificationController@update_notification')->middleware('admin');
-    Route::delete('/v1/notifications/{id}', 'NotificationController@delete_notification')->middleware('admin');
+    Route::patch('/v1/notifications/{id}', 'NotificationController@update_notification');
+    Route::delete('/v1/notifications/{id}', 'NotificationController@delete_notification');
 
 });
 
 Route::group(
     [
 
-    'middleware' => ['HandleCors'],
+    
     'prefix' => '/v1/me',
     'namespace' => 'App\Http\Controllers',
     ]
