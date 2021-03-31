@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'paths' => ['*'],
+    'paths' => ['api/*', 'localhost/*'],
 
     'allowed_methods' => ['*'],
 
@@ -27,7 +27,7 @@ return [
 
     'exposed_headers' => ['*'],
 
-    'max_age' => 60,
+    'max_age' => 0,
 
     'supports_credentials' => false,
 
