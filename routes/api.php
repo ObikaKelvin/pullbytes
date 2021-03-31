@@ -26,7 +26,7 @@ Route::post('/v1/register', 'App\Http\Controllers\AuthController@register')->mid
 Route::group(
     [
 
-    'middleware' => ['auth:api', 'HandleCors'],
+    'middleware' => ['HandleCors'],
     'namespace' => 'App\Http\Controllers',
     ]
 
@@ -81,7 +81,7 @@ Route::group(
 Route::group(
     [
 
-    'middleware' => ['auth:api', 'HandleCors'],
+    'middleware' => ['HandleCors'],
     'prefix' => '/v1/me',
     'namespace' => 'App\Http\Controllers',
     ]
