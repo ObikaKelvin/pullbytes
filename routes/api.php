@@ -21,15 +21,12 @@ use Illuminate\Support\Facades\Route;
 Route::post('/v1/login', 'App\Http\Controllers\AuthController@login');
 Route::post('/v1/register', 'App\Http\Controllers\AuthController@register');
 
-Route::put('/v1/update_password', 'App\Http\Controllers\AuthController@update_password');
-Route::put('/v1/update_me', 'App\Http\Controllers\UserController@update_me');
-Route::delete('/v1/delete_me', 'App\Http\Controllers\UserController@delete_me');
 
 
 Route::group(
     [
 
-    // 'middleware' => 'auth:api',
+    'middleware' => 'auth:api',
     'namespace' => 'App\Http\Controllers',
     ]
 
@@ -42,12 +39,15 @@ Route::group(
     Route::post('/v1/refresh', 'AuthController@refresh');
 
     Route::get('/v1/subscriptions', 'SubscriptionController@getSubscription');
+    Route::post('/v1/checkout', 'SubscriptionController@checkout');
+    Route::post('/v1/cancel_subscription', 'SubscriptionController@cancel_subscription');
+    Route::post('/v1/renew_subscription', 'SubscriptionController@renew_subscription');
     Route::get('/v1/subscribe', 'SubscriptionController@getSubscribed');
     Route::post('/v1/subscribe/{planId}', 'SubscriptionController@createSubscription');
     Route::post('/v1/verifySubscription/{planId}', 'SubscriptionController@verifySubscription');
 
 
-    Route::get('/v1/plans', 'PlanController@get_plans')->middleware('admin');
+    Route::get('/v1/plans', 'PlanController@get_plans');
     Route::post('/v1/plans', 'PlanController@create_plan')->middleware('admin');
     Route::get('/v1/plans/{id}', 'PlanController@get_plan')->middleware('admin');
     Route::put('/v1/plans/{id}', 'PlanController@update_plan')->middleware('admin');
@@ -60,9 +60,21 @@ Route::group(
 
     Route::get('/v1/licenses', 'LicenseController@get_licenses')->middleware('admin');
     Route::post('/v1/licenses', 'LicenseController@create_license')->middleware('admin');
-    Route::get('/v1/licenses/{license_number}', 'LicenseController@get_license')->middleware('admin');
-    Route::put('/v1/licenses/{license_number}', 'LicenseController@update_license')->middleware('admin');
-    Route::delete('/v1/licenses/{license_number}', 'LicenseController@delete_license')->middleware('admin');
+    Route::get('/v1/licenses/{id}', 'LicenseController@get_license')->middleware('admin');
+    Route::patch('/v1/licenses/{id}', 'LicenseController@update_license')->middleware('admin');
+    Route::delete('/v1/licenses/{id}', 'LicenseController@delete_license')->middleware('admin');
+
+    Route::get('/v1/tickets', 'TicketController@get_tickets')->middleware('admin');
+    Route::post('/v1/tickets', 'TicketController@create_ticket')->middleware('admin');
+    Route::get('/v1/tickets/{id}', 'TicketController@get_ticket')->middleware('admin');
+    Route::patch('/v1/tickets/{id}', 'TicketController@update_ticket')->middleware('admin');
+    Route::delete('/v1/tickets/{id}', 'TicketController@delete_ticket')->middleware('admin');
+
+    Route::get('/v1/notifications', 'NotificationController@get_notifications');
+    Route::post('/v1/notifications', 'NotificationController@create_notification');
+    Route::get('/v1/notifications/{id}', 'NotificationController@get_notification');
+    Route::patch('/v1/notifications/{id}', 'NotificationController@update_notification')->middleware('admin');
+    Route::delete('/v1/notifications/{id}', 'NotificationController@delete_notification')->middleware('admin');
 
 });
 
@@ -77,9 +89,21 @@ Route::group(
 , function ($router) {
 
     Route::post('/', 'AuthController@me');
+    Route::patch('/update_password', 'AuthController@update_password');
+    Route::put('/update_me', 'UserController@update_me');
+    Route::delete('/delete_me', 'UserController@delete_me');
+    Route::get('/tickets', 'TicketController@get_my_tickets');
+    Route::post('/tickets', 'TicketController@create_my_tickets');
+    Route::get('/tickets/{id}', 'TicketController@get_my_ticket');
+    Route::patch('/tickets/{id}', 'TicketController@update_my_ticket');
+    Route::delete('/tickets/{id}', 'TicketController@delete_my_ticket');
+
+    Route::patch('/cancel_subscription/{id}', 'SubscriptionController@cancel_subscription');
+    Route::patch('/renew_subscription/{id}', 'SubscriptionController@renew_subscription');
+
 
     Route::get('/licenses', 'LicenseController@get_my_licenses');
-    Route::get('/licenses/{license_number}', 'LicenseController@get_my_license');
-    Route::put('licenses/{license_number}', 'LicenseController@update_my_license');
+    Route::get('/licenses/{id}', 'LicenseController@get_my_license');
+    Route::patch('/licenses/{id}', 'LicenseController@update_my_license');
 
 });
