@@ -33,6 +33,7 @@ class PlanController extends Controller
         try {
             //code...
             $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
+            $features = explode($request->input('features'), '\n');
             $plan = new Plan([
                 'name' => $request->input('name'),
                 'type' => $request->input('type'),
@@ -40,7 +41,7 @@ class PlanController extends Controller
                 'price' => $request->input('price'),
                 'interval' => $request->input('interval'),
                 'description' => $request->input('description'),
-                'features' => json_encode($request->input('features')),
+                'features' => json_encode($features),
             ]);
             
             if($plan->type === 'recurring'){
@@ -134,7 +135,7 @@ class PlanController extends Controller
             $plan->save();
             return response()->json([
                 'status' => 'success',
-                'plan' => $stripe_price
+                'plan' => $plan
             ], 200);
         } catch (\Throwable $th) {
             //throw $th;
