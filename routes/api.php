@@ -18,8 +18,8 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::post('/v1/login', 'App\Http\Controllers\AuthController@login');
-Route::post('/v1/register', 'App\Http\Controllers\AuthController@register');
+Route::post('/v1/login', 'App\Http\Controllers\AuthController@login')->middleware('corsHandleCustom');
+Route::post('/v1/register', 'App\Http\Controllers\AuthController@register')->middleware('corsHandleCustom');
 
 
 
