@@ -18,15 +18,15 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::post('/v1/login', 'App\Http\Controllers\AuthController@login')->middleware('corsHandleCustom');
-Route::post('/v1/register', 'App\Http\Controllers\AuthController@register')->middleware('corsHandleCustom');
+Route::post('/v1/login', 'App\Http\Controllers\AuthController@login')->middleware('HandleCors ');
+Route::post('/v1/register', 'App\Http\Controllers\AuthController@register')->middleware('HandleCors ');
 
 
 
 Route::group(
     [
 
-    'middleware' => 'auth:api',
+    'middleware' => ['auth:api', 'HandleCors'],
     'namespace' => 'App\Http\Controllers',
     ]
 
@@ -81,7 +81,7 @@ Route::group(
 Route::group(
     [
 
-    'middleware' => 'auth:api',
+    'middleware' => ['auth:api', 'HandleCors'],
     'prefix' => '/v1/me',
     'namespace' => 'App\Http\Controllers',
     ]
