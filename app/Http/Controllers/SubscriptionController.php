@@ -7,6 +7,8 @@ use Laravel\Cashier\Subscription as Subscription;
 use App\Models\Plan;
 use App\Models\License;
 use App\Models\User;
+use Illuminate\Support\Str;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Cashier\Cashier;
@@ -74,9 +76,9 @@ class SubscriptionController extends Controller
             // }
 
             // if($user->hasDefaultPaymentMethod()){
-            //     $user->newSubscription(
-            //         '5 sites classic', 'price_1IQGfLHxFZiZPKLwIOh7AGSw'
-            //     )->add();
+                $user->newSubscription(
+                    '5 sites classic', 'price_1IQGfLHxFZiZPKLwIOh7AGSw'
+                )->create($payment_method);
             // }
 
             // $charge = $stripeCustomer->charge(100, $payment_method);
@@ -90,7 +92,7 @@ class SubscriptionController extends Controller
                     // 'products'=> $products,
                     // 'prices'=> $prices
                     // 'messag' => $customer_card,
-                    'message' => $items
+                    'message' => $payment_method
                 ], 
             200);
 
@@ -109,10 +111,118 @@ class SubscriptionController extends Controller
         }
     }
 
-    public function cancel_renewal()
+    public function checkout(Request $request)
     {
-        $user = Auth::user();
-        if($user->subscription('')){};
+    
+        try {
+            $user = Auth::user();
+            $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
+            $plan = Plan::find($request->input('planId'));
+                    
+            if(!$user->stripe_id){
+                $stripeCustomer = $user->createAsStripeCustomer();
+            }
+
+            $stripeCustomer = Cashier::findBillable($user->stripe_id);
+
+            $license = new License([
+                'license_number' => Str::uuid(),
+                'plan_id' => $plan->id,
+                'user_id' => $user->id,
+                'price' => $plan->price,
+            ]);
+
+            if($plan->type === 'lifetime'){
+                $charge = $stripeCustomer->charge(($plan->price * 100), $request->input('payment_id'));
+            }else{
+                if($stripeCustomer->subscribed($plan->name)){
+                    throw new Exception('You are already subscribed to this plan');
+                }
+                $subscription = $stripeCustomer->newSubscription(
+                    $plan->name, $plan->price_id
+                )->create($request->input('payment_id'));
+                $license->subscription_id = $subscription->id;
+                $license->billing_cycle = now()->addDays(365);
+            }
+
+            $license->save();
+
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'checkout' => true
+                ], 
+            200);
+
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'status' => 'fail',
+                    'message' => $th->getMessage()
+                ], 
+            200);
+        }
+    }
+
+    public function cancel_subscription( $id)
+    {
+        try {
+            $user = Auth::user();
+            // $license = License::where('license_number', $request->input('license_number'))->first();
+            $license = License::where('id', $id)->where('user_id', $user->id)->first();
+            $plan = Plan::find($license->plan_id);
+            $subscription = $user->subscription($plan->name)->cancel();
+            $license->expires_at = $subscription->ends_at;
+            $license->auto_renew = 'no';
+            $license->billing_cycle = null;
+            $license->save();
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'subscription' => $subscription,
+                    'license' => $license
+                ], 
+            200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(
+                [
+                    'status' => 'fail',
+                    'message' => $th->getMessage()
+                ], 
+            200);
+        }
+    }
+
+    public function renew_subscription($id)
+    {
+        try {
+            $user = Auth::user();
+            $license = License::where('id', $id)->where('user_id', $user->id)->first();
+            // $license = License::where('license_number', $request->input('license_number'))->first();
+            $plan = Plan::find($license->plan_id);
+            $subscription = $user->subscription($plan->name);
+            $license->expires_at = null;
+            $license->auto_renew = 'yes';
+            $license->billing_cycle = $subscription->ends_at;
+            $subscription = $subscription->resume();
+            $license->save();
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'subscription' => $subscription
+                ], 
+            200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(
+                [
+                    'status' => 'fail',
+                    'message' => $th->getMessage()
+                ], 
+            200);
+        }
+        
     }
 
     public function verifySubscription(Request $request, $license_number)
