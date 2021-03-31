@@ -20,7 +20,7 @@ class CreateLicensesTable extends Migration
             $table->unsignedBigInteger('plan_id');
             $table->unsignedBigInteger('user_id');
             $table->integer('price');
-            $table->json('active_urls')->default('');
+            $table->json('active_urls')->nullable();
             $table->string('status')->default('active');
             $table->string('auto_renew')->default('yes');
             $table->dateTime('expires_at')->nullable();
