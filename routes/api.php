@@ -18,9 +18,6 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-header('Access-Control-Allow-Origin: *');
-header( 'Access-Control-Allow-Headers: Authorization, Content-Type' );
-
 Route::post('/v1/login', 'App\Http\Controllers\AuthController@login');
 Route::post('/v1/register', 'App\Http\Controllers\AuthController@register');
 
