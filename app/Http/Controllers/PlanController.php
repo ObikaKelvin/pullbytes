@@ -29,11 +29,10 @@ class PlanController extends Controller
     }
 
     public function create_plan(PlanRequest $request){
-
         try {
             //code...
             $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
-            $features = explode($request->input('features'), '\n');
+            $features = explode(' ', $request->features);
             $plan = new Plan([
                 'name' => $request->input('name'),
                 'type' => $request->input('type'),
