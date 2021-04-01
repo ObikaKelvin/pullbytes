@@ -150,7 +150,9 @@ class SubscriptionController extends Controller
             return response()->json(
                 [
                     'status' => 'success',
-                    'checkout' => true
+                    'checkout' => true,
+                    'license' => $license,
+                    'plan' => $plan
                 ], 
             200);
 
@@ -160,7 +162,7 @@ class SubscriptionController extends Controller
                     'status' => 'fail',
                     'message' => $th->getMessage()
                 ], 
-            200);
+            400);
         }
     }
 
