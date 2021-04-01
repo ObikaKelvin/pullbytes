@@ -55,13 +55,13 @@ class SalesController extends Controller
         $plan_revenue = DB::table('licenses')
         ->leftJoin('plans as p', 'p.id', '=', 'licenses.plan_id')
         ->selectRaw('SUM(licenses.price) as amount, p.name')
-        ->groupBy('licenses.plan_id')
+        ->groupBy('licenses.plan_id', 'p.name')
         ->get();
 
         $plan_sales = DB::table('licenses')
         ->leftJoin('plans as p', 'p.id', '=', 'licenses.plan_id')
         ->selectRaw('COUNT(licenses.price) as sale, p.name')
-        ->groupBy('licenses.plan_id')
+        ->groupBy('licenses.plan_id', 'p.name')
         ->get();
         
         return response()->json([
