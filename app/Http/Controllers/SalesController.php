@@ -18,7 +18,7 @@ class SalesController extends Controller
 
         $data = [];
         $months = [];
-        for($i = $month; $i >= 1; $i--){
+        for($i = ($month-5); $i <= $month; $i++){
             $data[] = (int) (DB::table('licenses')->whereMonth('created_at', $i)->sum('price'));
             $months[] = date('M', mktime(0, 0, 0, (int)($i), 1));
         }
@@ -54,14 +54,14 @@ class SalesController extends Controller
 
         $plan_revenue = DB::table('licenses')
         ->leftJoin('plans as p', 'p.id', '=', 'licenses.plan_id')
-        ->selectRaw('SUM(licenses.price) as amount, p.name')
-        ->groupBy('licenses.plan_id', 'p.name')
+        ->selectRaw('SUM(licenses.price) as amount, p.name, p.interval')
+        ->groupBy('licenses.plan_id', 'p.name', 'p.interval')
         ->get();
 
         $plan_sales = DB::table('licenses')
         ->leftJoin('plans as p', 'p.id', '=', 'licenses.plan_id')
-        ->selectRaw('COUNT(licenses.price) as sale, p.name')
-        ->groupBy('licenses.plan_id', 'p.name')
+        ->selectRaw('COUNT(licenses.price) as sale, p.name, p.interval')
+        ->groupBy('licenses.plan_id', 'p.name', 'p.interval')
         ->get();
         
         return response()->json([
