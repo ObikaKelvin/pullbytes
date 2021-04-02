@@ -59,7 +59,11 @@ class LicenseController extends Controller{
             return response()->json(
                 [
                     'status' => 'fail',
+<<<<<<< HEAD
                     'message' => $th->getMessage()
+=======
+                    'message' => '$th->getMessage()'
+>>>>>>> 90e45241f13f441f17fde4a0ad6f47112cd5d2ad
                 ], 
             200);
         }
