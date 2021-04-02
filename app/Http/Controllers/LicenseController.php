@@ -23,17 +23,20 @@ class LicenseController extends Controller{
     {
     
         try {
-            $user = Auth::user();
             $license_number = $request->input('license_number');
             $url = $request->input('url');
            
             $license = License::where('license_number', $license_number)->first();
-            $plan = Plan::find($license->plan_id);
             if(!$license){
                 throw new Exception('License is invalid');
             }
+            $user = User::find($license->user_id);
+            $plan = Plan::find($license->plan_id);
             
             $acitve_urls = json_decode($license->active_urls);
+            if($acitve_urls === null){
+                $acitve_urls = [];
+            }
 
             if(!in_array($url, $acitve_urls)){
                 throw new Exception('Invalid website url');
@@ -50,7 +53,7 @@ class LicenseController extends Controller{
                     'status' => 'success',
                     'license_number' => $license->license_number,
                     'status' => $license->status,
-                    'expiry_date' => $license->expires_at,
+                    'expires_at' => $license->expires_at,
                     'billing_cycle' => $license->billing_cycle,
                 ], 
             200);
