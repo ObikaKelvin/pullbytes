@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/v1/login', 'App\Http\Controllers\AuthController@login')->middleware('api');
 Route::post('/v1/register', 'App\Http\Controllers\AuthController@register')->middleware('api');
-Route::get('/v1/verify_license', 'App\Http\Controllers\LicenseController@verifyLicense');
+Route::post('/v1/verify_license', 'App\Http\Controllers\LicenseController@verifyLicense');
 
 
 
