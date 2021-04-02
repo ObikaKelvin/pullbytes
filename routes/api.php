@@ -47,12 +47,17 @@ Route::group(
     Route::post('/v1/subscribe/{planId}', 'SubscriptionController@createSubscription');
     Route::post('/v1/verifySubscription/{planId}', 'SubscriptionController@verifySubscription');
 
-
     Route::get('/v1/plans', 'PlanController@get_plans');
     Route::post('/v1/plans', 'PlanController@create_plan');
     Route::get('/v1/plans/{id}', 'PlanController@get_plan');
     Route::put('/v1/plans/{id}', 'PlanController@update_plan');
     Route::delete('/v1/plans/{id}', 'PlanController@delete_plan');
+
+    Route::get('/v1/coupons', 'CouponController@get_coupons');
+    Route::post('/v1/coupons', 'CouponController@create_coupon');
+    Route::get('/v1/coupons/{id}', 'CouponController@get_coupon');
+    Route::patch('/v1/coupons/{id}', 'CouponController@update_coupon');
+    Route::delete('/v1/coupons/{id}', 'CouponController@delete_coupon');
 
     Route::get('/v1/monthly_revenue', 'SalesController@getMonthlyRevenue');
     Route::get('/v1/sales_stats', 'SalesController@getSalesStats');
@@ -94,12 +99,14 @@ Route::group(
     Route::patch('/update_password', 'AuthController@update_password');
     Route::put('/update_me', 'UserController@update_me');
     Route::delete('/delete_me', 'UserController@delete_me');
+    
     Route::get('/tickets', 'TicketController@get_my_tickets');
     Route::post('/tickets', 'TicketController@create_my_tickets');
     Route::get('/tickets/{id}', 'TicketController@get_my_ticket');
     Route::patch('/tickets/{id}', 'TicketController@update_my_ticket');
     Route::delete('/tickets/{id}', 'TicketController@delete_my_ticket');
 
+    Route::get('/get_intent', 'SubscriptionController@getSetupIntent');
     Route::patch('/cancel_subscription/{id}', 'SubscriptionController@cancel_subscription');
     Route::patch('/renew_subscription/{id}', 'SubscriptionController@renew_subscription');
 

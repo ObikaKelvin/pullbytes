@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Exception;
-use Laravel\Cashier\Subscription as Subscription;
+use Laravel\Cashier\Subscription;
 use App\Models\Plan;
 use App\Models\License;
 use App\Models\User;
+use  App\Models\Coupon;
 use Illuminate\Support\Str;
 
 use Illuminate\Http\Request;
@@ -35,6 +36,29 @@ class SubscriptionController extends Controller
             ], 
         200);
     }
+
+    public function getSetupIntent(){
+        try {
+            //code...
+            $user = Auth::user();
+            $intent = $user->createSetupIntent();
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'intent' => $intent
+                ], 
+            200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(
+                [
+                    'status' => 'fail',
+                    'message' => $th->getMessage(),
+                ], 
+            400);
+        }
+    }
+
 
     public function createSubscription(Request $request, $planId)
     {
@@ -107,7 +131,7 @@ class SubscriptionController extends Controller
 
 
                 ], 
-            200);
+            400);
         }
     }
 
@@ -118,7 +142,28 @@ class SubscriptionController extends Controller
             $user = Auth::user();
             $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
             $plan = Plan::find($request->input('planId'));
-                    
+            $coupon = Coupon::where('name', '=', $request->input('couponId'))->first();
+            // $payment_id = $request->input('payment_id');
+            $card_token = $stripe->tokens->create([
+                'card' => $request->card,
+            ]);
+
+            $customer_card = $stripe->customers->createSource(
+                $user->stripe_id,
+                ['source' => $card_token]
+            );
+            
+            $intent = $user->createSetupIntent(
+                [ 'customer' => $user->stripe_id ]
+            );
+
+            $confirmed_intent = $stripe->setupIntents->confirm(
+                $intent->id,
+                ['payment_method' => $customer_card]
+            );
+
+            $payment_id = $confirmed_intent->payment_method;
+
             if(!$user->stripe_id){
                 $stripeCustomer = $user->createAsStripeCustomer();
             }
@@ -133,14 +178,22 @@ class SubscriptionController extends Controller
             ]);
 
             if($plan->type === 'lifetime'){
-                $charge = $stripeCustomer->charge(($plan->price * 100), $request->input('payment_id'));
+                $charge = $stripeCustomer->charge(($plan->price * 100), $payment_id);
             }else{
                 if($stripeCustomer->subscribed($plan->name)){
                     throw new Exception('You are already subscribed to this plan');
                 }
-                $subscription = $stripeCustomer->newSubscription(
-                    $plan->name, $plan->price_id
-                )->create($request->input('payment_id'));
+                $subscription = '';
+                if($coupon){
+                    $subscription = $stripeCustomer->newSubscription($plan->name, $plan->price_id)
+                    ->withCoupon($coupon->stripe_id)
+                    ->create($payment_id);
+                }else{
+                    $subscription = $stripeCustomer->newSubscription(
+                        $plan->name, $plan->price_id
+                    )->create($payment_id);
+                }
+                
                 $license->subscription_id = $subscription->id;
                 $license->billing_cycle = now()->addDays(365);
             }
