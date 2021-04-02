@@ -144,17 +144,24 @@ class SubscriptionController extends Controller
             $plan = Plan::find($request->input('planId'));
             $coupon = Coupon::where('name', '=', $request->input('couponId'))->first();
             // $payment_id = $request->input('payment_id');
+
+            if(!$user->stripe_id){
+                $stripeCustomer = $user->createAsStripeCustomer();
+            }
+
+            $stripeCustomer = Cashier::findBillable($user->stripe_id);
+
             $card_token = $stripe->tokens->create([
                 'card' => $request->card,
             ]);
 
             $customer_card = $stripe->customers->createSource(
-                $user->stripe_id,
+                $stripeCustomer->stripe_id,
                 ['source' => $card_token]
             );
             
-            $intent = $user->createSetupIntent(
-                [ 'customer' => $user->stripe_id ]
+            $intent = $stripeCustomer->createSetupIntent(
+                [ 'customer' => $stripeCustomer->stripe_id ]
             );
 
             $confirmed_intent = $stripe->setupIntents->confirm(
@@ -163,12 +170,6 @@ class SubscriptionController extends Controller
             );
 
             $payment_id = $confirmed_intent->payment_method;
-
-            if(!$user->stripe_id){
-                $stripeCustomer = $user->createAsStripeCustomer();
-            }
-
-            $stripeCustomer = Cashier::findBillable($user->stripe_id);
 
             $license = new License([
                 'license_number' => Str::uuid(),
