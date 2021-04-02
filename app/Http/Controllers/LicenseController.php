@@ -19,6 +19,52 @@ use Illuminate\Support\Facades\DB;
 
 class LicenseController extends Controller{
 
+    public function verifyLicense(Request $request)
+    {
+    
+        try {
+            $user = Auth::user();
+            $license_number = $request->input('license_number');
+            $url = $request->input('url');
+           
+            $license = License::where('license_number', $license_number)->first();
+            $plan = Plan::find($license->plan_id);
+            if(!$license){
+                throw new Exception('License is invalid');
+            }
+            
+            $acitve_urls = json_decode($license->active_urls);
+
+            if(!in_array($url, $acitve_urls)){
+                throw new Exception('Invalid website url');
+            }
+
+            if($plan->type ===  'recurring'){
+                if( !$user->subscribed() && !$user->onTrial() ){
+                    throw new Exception('Sorry your license has expired, please renew it and continue enjoying premium benefits');
+                }
+            }
+
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'license_number' => $license->license_number,
+                    'status' => $license->status,
+                    'expiry_date' => $license->expires_at,
+                    'billing_cycle' => $license->billing_cycle,
+                ], 
+            200);
+
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'status' => 'fail',
+                    'message' => $th->getMessage()
+                ], 
+            200);
+        }
+    }
+
     public function get_licenses(){
         try {
             //code...
