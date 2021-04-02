@@ -64,6 +64,7 @@ Route::group(
     Route::get('/v1/getPlanSalesStats', 'SalesController@getPlanSalesStats');
     
 
+    Route::get('/v1/verify_license', 'LicenseController@verifyLicense');
     Route::get('/v1/licenses', 'LicenseController@get_licenses');
     Route::post('/v1/licenses', 'LicenseController@create_license');
     Route::get('/v1/licenses/{id}', 'LicenseController@get_license');
