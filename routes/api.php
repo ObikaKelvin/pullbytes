@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/v1/login', 'App\Http\Controllers\AuthController@login')->middleware('api');
 Route::post('/v1/register', 'App\Http\Controllers\AuthController@register')->middleware('api');
+Route::get('/v1/verify_license', 'App\Http\Controllers\LicenseController@verifyLicense');
 
 
 
@@ -64,7 +65,6 @@ Route::group(
     Route::get('/v1/getPlanSalesStats', 'SalesController@getPlanSalesStats');
     
 
-    Route::get('/v1/verify_license', 'LicenseController@verifyLicense');
     Route::get('/v1/licenses', 'LicenseController@get_licenses');
     Route::post('/v1/licenses', 'LicenseController@create_license');
     Route::get('/v1/licenses/{id}', 'LicenseController@get_license');
