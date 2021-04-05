@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Coupon extends Model
+class PromoCode extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -26,13 +26,8 @@ class Coupon extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function plans()
+    public function coupons()
     {
-        return $this->belongsTo(Plan::class);
-    }
-
-    public function promoCodes()
-    {
-        return $this->belongsTo(PromoCode::class);
+        return $this->belongsTo(Coupon::class);
     }
 }

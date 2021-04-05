@@ -60,6 +60,13 @@ Route::group(
     Route::patch('/v1/coupons/{id}', 'CouponController@update_coupon');
     Route::delete('/v1/coupons/{id}', 'CouponController@delete_coupon');
 
+    Route::post('/v1/generate_promo_codes', 'PromoCodeController@generate_promo_codes');
+    Route::get('/v1/promo_codes', 'PromoCodeController@get_promo_codes');
+    Route::post('/v1/promo_codes', 'PromoCodeController@create_promo_code');
+    Route::get('/v1/promo_codes/{id}', 'PromoCodeController@get_promo_code');
+    Route::patch('/v1/promo_codes/{id}', 'PromoCodeController@update_promo_code');
+    Route::delete('/v1/promo_codes/{id}', 'PromoCodeController@delete_promo_code');
+
     Route::get('/v1/monthly_revenue', 'SalesController@getMonthlyRevenue');
     Route::get('/v1/sales_stats', 'SalesController@getSalesStats');
     Route::get('/v1/getPlanSalesStats', 'SalesController@getPlanSalesStats');

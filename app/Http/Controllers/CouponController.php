@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use  App\Models\Coupon;
+use App\Models\PromoCode;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -53,6 +54,22 @@ class CouponController extends Controller
                 'percent_off' => $coupon->percent_off,
                 'max_redemptions' => $coupon->max_redemptions,
             ]);
+
+            $promoCodes = [];
+            $number_promo_codes = $request->input('number_promo_codes');
+            for ($i=0; $i < $number_promo_codes; $i++) { 
+                $promoCode = new PromoCode([
+                    'coupon' => $stripe_coupon->id
+                ]);
+                
+                $stripePromoCode = $this->stripe->promotionCodes->create([
+                    'coupon' => $promoCode->coupon,
+                  ]);
+    
+                  $promoCode->code = $stripePromoCode->code;
+                  $promoCode->save();
+                  $promoCodes[] = $promoCode;
+            }
 
             $coupon->stripe_id = $stripe_coupon->id;
             $coupon->save();
