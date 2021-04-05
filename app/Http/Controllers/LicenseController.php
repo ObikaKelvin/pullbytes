@@ -164,7 +164,8 @@ class LicenseController extends Controller{
             //code...
             // $license = License::where('license_number', $license_number)->where('user_id', Auth::user()->id)->first();
             $license = License::find($id);
-            $license->status = $request->status;
+            $license->status = $request->input('status');
+            $license->active_urls = json_encode($request->input('active_urls'));
             $license->save();
             if(!$license){
                 throw new Exception("License was not found");
