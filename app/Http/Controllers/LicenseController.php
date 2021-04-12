@@ -71,8 +71,16 @@ class LicenseController extends Controller{
     public function get_licenses(){
         try {
             //code...
-            // $licenses = License::all();
+            $checkedLicenses = License::all();
+            foreach ($checkedLicenses as  $license) {
+                # code...
+                if($license->expires_at && $license->expires_at < now()){
+                    $license->status = 'inactive';
+                    $license->save();
+                }
+            }
             $licenses = DB::table('licenses', 'l')->select('l.id', 'l.license_number', 'l.auto_renew', 'p.name as plan', 'p.interval as interval', 'l.price', 'l.expires_at', 'l.status', 'u.name as user')->leftJoin('plans as p', 'p.id', '=', 'l.plan_id')->leftJoin('users as u', 'l.user_id', '=', 'u.id')->where('l.deleted_at', '=', null)->orderBy('l.updated_at', 'desc')->get();
+
             return response()->json([
                 'status' => 'success',
                 'licenses' => $licenses
@@ -189,6 +197,14 @@ class LicenseController extends Controller{
         try {
             //code...
             $licenses = DB::table('licenses', 'l')->select('l.id', 'l.license_number', 'l.auto_renew', 'p.name as plan', 'p.interval as interval', 'l.price', 'l.status')->leftJoin('plans as p', 'p.id', '=', 'l.plan_id')->where('l.user_id', Auth::user()->id)->where('l.deleted_at', '=', null)->orderBy('l.created_at', 'desc')->get();
+            $checkedLicenses = License::all();
+            foreach ($checkedLicenses as  $license) {
+                # code...
+                if($license->expires_at && $license->expires_at < now()){
+                    $license->status = 'inactive';
+                    $license->save();
+                }
+            }
             return response()->json([
                 'status' => 'success', 
                 'licenses' => $licenses
