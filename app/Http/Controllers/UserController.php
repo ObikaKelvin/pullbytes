@@ -187,21 +187,12 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function update_me(UserRequest $request)
+    public function update_me(Request $request)
     {
         try {
             if(!auth()->user()){
                 throw new Exception('User not found');
             }
-
-            // $validator = Validator::make($request->all(), [
-            //     'name' => 'required|string|between:2,100',
-            //     'email' => 'required|email|unique:users',
-            //     // 'email.required' => 'email is required',
-            //     // 'password' => 'required|min:6'
-            // ]);
-
-           
 
             $user = User::find($request->user()->id);
             $user->name = $request->input('name');
