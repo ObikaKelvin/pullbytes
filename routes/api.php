@@ -69,7 +69,7 @@ Route::group(
 
     Route::get('/v1/monthly_revenue', 'SalesController@getMonthlyRevenue');
     Route::get('/v1/sales_stats', 'SalesController@getSalesStats');
-    Route::get('/v1/getPlanSalesStats', 'SalesController@getPlanSalesStats');
+    Route::get('/v1/get_plan_sales_stats', 'SalesController@getPlanSalesStats');
     
 
     Route::get('/v1/licenses', 'LicenseController@get_licenses');
@@ -105,7 +105,7 @@ Route::group(
 
     Route::post('/', 'AuthController@me');
     Route::patch('/update_password', 'AuthController@update_password');
-    Route::put('/update_me', 'UserController@update_me');
+    Route::patch('/update_me', 'UserController@update_me');
     Route::delete('/delete_me', 'UserController@delete_me');
     
     Route::get('/tickets', 'TicketController@get_my_tickets');

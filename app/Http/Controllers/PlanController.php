@@ -173,4 +173,38 @@ class PlanController extends Controller
             ], 400);
         }
     }
+
+    public function get_top_plans(Request $request){
+        $filter = $request->input('filter');
+        $date = '';
+        switch ($filter) {
+            case 'week':
+                # code...
+                break;
+            
+            case 'month':
+                # code...
+                break;
+
+            case 'yeah':
+                # code...
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+        $top_plans = DB::table('licenses')
+        ->leftJoin('plans as p', 'p.id', '=', 'licenses.plan_id')
+        ->selectRaw('COUNT(licenses.price) as plans, p.name')
+        ->groupByRaw('licenses.plan_id')
+        ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'top_plans' => $top_plans
+        ], 200);
+    }
+
 }
