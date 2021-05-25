@@ -32,7 +32,7 @@ class SalesController extends Controller
             $percent_increase = 100;
         }
         else{
-            $percent_increase = round( ($current_month_revenue - $last_month_revenue)/$last_month_revenue, 2 );
+            $percent_increase = round( ($current_month_revenue - $last_month_revenue)/$last_month_revenue, 2 ) * 100;
         }
         return response()->json([
             'status' => 'success',
