@@ -85,6 +85,8 @@ class AuthController extends Controller
     public function me()
     {
         $user = auth()->user();
+        $user->last_login = now();
+        $user->save();
         if($user === null){
             return response()->json([
                 'status' => 'fail',
